@@ -1,54 +1,51 @@
-#ifndef VECTOR_H
-#define VECTOR_H
 #include <vector>
-#endif
+#include <string>
 
-// Prerequisite 3-point vector class used for Quaternion class
-class Vector3D
+#ifndef QUATERNION_H
+#define QUATERNION_H
+
+// Exception class
+class QuaternionException
 {
-
-protected:
-
-    double m_i{};
-    double m_j{};
-    double m_k{};
-
+private:
+    std::string m_error;
 public:
-
-    Vector3D(double i = 0.0, double j = 0.0, double k = 0.0)
-        : m_i{ i }, m_j{ j }, m_k{ k } {}
-
-    const double getI() { return m_i; }
-    const double getJ() { return m_j; }
-    const double getK() { return m_k; }
-
+    QuaternionException(std::string error) : m_error{ error } {}
+    std::string getError() { return m_error; }
 };
 
 
 // Quaternion class
-class Quaternion: public Vector3D
+class Quaternion
 {
 
 private:
 
-    double m_real{};
+    double m_i{}, m_j{}, m_k{}, m_real{};
 
 public:
 
-//** CONSTRUCTORS **//
+// CONSTRUCTORS //
 
-    // vector with real, default
-    Quaternion(Vector3D vector=Vector3D{}, double real=0.0)
-        : Vector3D{ vector }, m_real{ real } {}
+    // Vector, size 4
+    Quaternion(std::vector<double> V)
+        : m_i{ V[0] }, m_j{ V[1] }, m_k{ V[2] }, m_real{ V[3] }
+        { if(V.size() > 4) throw QuaternionException{ "Invalid vector size." }; }
 
-    // full manual
+    // Vector, size 3, with real attached
+    Quaternion(std::vector<double> V, double real)
+        : m_i{ V[0] }, m_j{ V[1] }, m_k{ V[2] }, m_real{ real }
+        { if(V.size() > 3) throw QuaternionException{ "Invalid vector size." }; }
+
+    // Full manual
     Quaternion(double i, double j, double k, double real)
-        : Vector3D{ i, j, k }, m_real{ real } {}
+        : m_i{ i }, m_j{ j }, m_k{ k }, m_real{ real } {}
 
 
 
-//** ARITHMETIC OVERLOADS **//
+// ARITHMETIC OVERLOADS //
 
+    // Multiplication
     friend Quaternion operator* (const Quaternion& q1, const Quaternion& q2)
     {
 
@@ -59,16 +56,17 @@ public:
 
     }
 
+    // Addition an subtraction
     friend Quaternion operator+ (Quaternion& q1, Quaternion& q2) {return {{q1.m_i+q2.m_i, q1.m_j+q2.m_j, q1.m_k+q2.m_k}, q1.m_real+q2.m_real};}
     friend Quaternion operator- (Quaternion& q1, Quaternion& q2) {return {{q1.m_i-q2.m_i, q1.m_j-q2.m_j, q1.m_k-q2.m_k}, q1.m_real-q2.m_real};}
 
 
-
-//** TRANSFORMATIONS **//
+// TRANSFORMATIONS //
 
     // Invert quaternion
     Quaternion invert() {return {-m_i, -m_j, -m_k, m_real};}
 
+/*
     // Rotate q by *this quaternion
     Quaternion transform(Quaternion& q) {return (*this)*q*(this->invert());}
 
@@ -99,13 +97,21 @@ public:
 
 
 
-//** PRINT AND GET FUNCTIONS **//
+// PRINT AND GET FUNCTIONS //
 
     void print() {std::cout << getI() << " " << getJ() << " " << getK() << "\n";}
     const double getReal() {return m_real;}
 
+*/
+
 };
 
 
+#endif
 
-
+int main()
+{
+    std::vector<double> v{1,2,3,4,5};
+    Quaternion q{v};
+    return 0;
+}
