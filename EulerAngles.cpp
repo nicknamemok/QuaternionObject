@@ -24,6 +24,9 @@ void EulerAngles::toRadians()
 
 Quaternion EulerAngles::toQuaternion()
 {
+    // Make sure to convert all angles to radians before conversion to Quaternion
+    if (m_unit == eulerAngleUnit::radians) { (*this).toRadians(); }
+    
     double real{ cos(m_roll/2)*cos(m_pitch/2)*cos(m_yaw/2) + sin(m_roll/2)*sin(m_pitch/2)*sin(m_yaw/2) };
     double i{ sin(m_roll/2)*cos(m_pitch/2)*cos(m_yaw/2) - cos(m_roll/2)*sin(m_pitch/2)*sin(m_yaw/2) };
     double j{ cos(m_roll/2)*sin(m_pitch/2)*cos(m_yaw/2) + sin(m_roll/2)*cos(m_pitch/2)*sin(m_yaw/2) };
