@@ -1,6 +1,5 @@
 #include "EulerAngles.h"
 
-// Test
 
 constexpr double rad2degrees = 360 / (2*M_PI);
 constexpr double degrees2rad = (2*M_PI) / 360;
